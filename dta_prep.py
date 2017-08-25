@@ -41,3 +41,8 @@ W1 = np.random.randn(D, M)
 b1 = np.zeros(M)
 W2 = np.random.randn(M, K)
 b2 = np.zeros(K)
+
+
+PYX = forward(X, W1, b1, W2, b2)
+P = np.argmax(PYX, axis=1)
+print(classificate(Y, P))

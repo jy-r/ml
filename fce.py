@@ -1,28 +1,9 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-Nclass = 500
 
-X1 = np.random.randn(Nclass, 2)+np.array([0, -2])
-X2 = np.random.randn(Nclass, 2)+np.array([2, 2])
-X3 = np.random.randn(Nclass, 2)+np.array([-2, 2])
-X = np.vstack([X1, X2, X3])
-
-Y = np.array([0]*Nclass+[1]*Nclass+[2]*Nclass)
-
-plt.scatter(X[:, 0], X[:, 1], c=Y, s=100, alpha=0.5)
-plt.show()
-
-
-M, D = X.shape
-
-K = 3
-
-
-W1 = np.random.randn(D, M)
-b1 = np.random.randn(M)
-W2 = np.random.randn(M, K)
-b2 = np.random.randn(K)
+# plt.scatter(X[:, 0], X[:, 1], c=Y, s=100, alpha=0.5)
+# plt.show()
 
 
 def sigmoid(x):
@@ -39,21 +20,42 @@ def forwardSig(X, W1, b1, W2, b2):
     Z = sigmoid(X.dot(W1) + b1)
     A = Z.dot(W2) + b2
     Y = softmax(A)
-    return Y
+    return Y, Z
 
 
 def forwardTanh(X, W1, b1, W2, b2):
     Z = np.tanh(X.dot(W1) + b1)
     A = Z.dot(W2) + b2
     Y = softmax(A)
-    return Y
+    return Y, Z
 
 
 def normalize(x):
     return((x - x.mean()) / x.std())
 
 
-def classificate(Y, P):
+def cost(T, Y):
+    tot = T * np.log(Y)
+    return(tot.sum())
+
+
+def derivateW2(Z, T, Y):
+    return(Z.T.dot(T - Y))
+
+
+def derivateb2(T, Y):
+    return (T - Y).sum(axis=0)
+
+
+def derivateW1(X, Z, T, Y, W2):
+    return X.T.dot((T - Y).dot(W2.T) * Z * (1 - Z))
+
+
+def derivateb1(T, Y, W2, Z):
+    return((T - Y).dot(W2.T) * Z * (1 - Z)).sum(axis=0)
+
+
+def classificate_rate(Y, P):
     n_correct = 0
     n_total = 0
     for i in range(len(Y)):
@@ -62,12 +64,36 @@ def classificate(Y, P):
             n_correct += 1
     return float(n_correct) / n_total
 
-def classificate_rate(Y, P):
+
+def classificate_rate2(Y, P):
     return np.mean(Y == P)
 
-PYX = forward(X, W1, b1, W2, b2)
-P = np.argmax(PYX, axis=1)
 
+def gradAsc(X, T, K, M=3, alpha=10e-5, iteration = 1000):
+    costs = []
+    D = X.shape[1]
+    W1 = np.random.randn(D, M)
+    b1 = np.random.randn(M)
+    W2 = np.random.randn(M, K)
+    b2 = np.random.randn(K)
 
-assert(len(P) == len(Y))
-print(clasificate(Y, P))
+    for epoch in range(iteration):
+        output, hidden = forwardTanh(X, W1, b1, W2, b2)
+        if epoch % 100 == 0:
+            c = cost(T, output)
+            P = np.argmax(output, axis=1)
+            r = classificate_rate(Y, P)
+            print("cost:", c, "classi:", r)
+            costs.append(c)
+        output.shape
+        hidden.shape
+        X.shape
+        W2 += alpha * derivateW2(hidden, T, output)
+        b2 += alpha * derivateb2(T, output)
+        W1 += alpha * derivateW1(X, hidden, T, output, W2)
+        b1 += alpha * derivateb1(T, output, W2, hidden)
+
+    plt.plot(costs)
+    plt.show()
+
+    return(W1,b1,W2,b2)
