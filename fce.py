@@ -30,6 +30,10 @@ def forwardTanh(X, W1, b1, W2, b2):
     return Y, Z
 
 
+def forwardSoft(X, W, b):
+    return softmax(X.dot(W) + b)
+
+
 def normalize(x):
     return((x - x.mean()) / x.std())
 
@@ -37,6 +41,10 @@ def normalize(x):
 def cost(T, Y):
     tot = T * np.log(Y)
     return(tot.sum())
+
+
+def cross_ent(T, pY):
+    return(-np.mean(T*np.log(pY)))
 
 
 def derivateW2(Z, T, Y):
@@ -53,6 +61,10 @@ def derivateW1(X, Z, T, Y, W2):
 
 def derivateb1(T, Y, W2, Z):
     return((T - Y).dot(W2.T) * Z * (1 - Z)).sum(axis=0)
+
+
+def predict(pYX):
+    return np.argmax(pYX, axis=1)
 
 
 def classificate_rate(Y, P):
@@ -78,11 +90,11 @@ def gradAsc(X, T, K, M=3, alpha=10e-5, iteration = 1000):
     b2 = np.random.randn(K)
 
     for epoch in range(iteration):
-        output, hidden = forwardTanh(X, W1, b1, W2, b2)
+        output, hidden = forwardSig(X, W1, b1, W2, b2)
         if epoch % 100 == 0:
             c = cost(T, output)
             P = np.argmax(output, axis=1)
-            r = classificate_rate(Y, P)
+            r = classificate_rate(predict(T), P)
             print("cost:", c, "classi:", r)
             costs.append(c)
         output.shape

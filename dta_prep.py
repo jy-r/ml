@@ -32,6 +32,7 @@ def get_bin():
     Y2 = Y[Y <= 1]
     return X2, Y2
 
+
 X, Y = get_dta()
 
 M = 5
@@ -41,8 +42,3 @@ W1 = np.random.randn(D, M)
 b1 = np.zeros(M)
 W2 = np.random.randn(M, K)
 b2 = np.zeros(K)
-
-
-PYX = forward(X, W1, b1, W2, b2)
-P = np.argmax(PYX, axis=1)
-print(classificate(Y, P))
