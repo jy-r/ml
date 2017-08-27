@@ -30,7 +30,7 @@ def dtget():
 
     dta_train = dta[['bias','Pclass1','Pclass2','SexM','AgeN','SibSp','Parch1','Parch2','Parch3','Parch4','Parch5','Parch6','FareN','EmbarkedS','EmbarkedC']]
 
-    test_df = pd.read_csv("C:\\Users\\jirka\\Google Drive\\8_Samostudium\\Kaggle\\titanic\\data\\test.csv")
+    test_df = pd.read_csv("titanic\\dta\\test.csv")
     dta_test = test_df[['Pclass','Sex','Age','SibSp','Parch','Fare','Embarked']]
     dta_test = dta_test.assign(Pclass1=(dta_test.loc[:, 'Pclass'] == 1).astype(int))
     dta_test = dta_test.assign(Pclass2=(dta_test.loc[:, 'Pclass'] == 2).astype(int))
@@ -41,8 +41,8 @@ def dtget():
     dta_test = dta_test.assign(Parch1=(dta_test.loc[:, 'Parch'] == 1).astype(int))
     dta_test = dta_test.assign(Parch2=(dta_test.loc[:, 'Parch'] == 2).astype(int))
     dta_test = dta_test.assign(Parch3=(dta_test.loc[:, 'Parch'] == 3).astype(int))
-    dta_test = dta_test.assign(Parch4=(dta_test.loc[:, 'Parch'] == 4).astype(int))
     dta_test = dta_test.assign(Parch5=(dta_test.loc[:, 'Parch'] == 5).astype(int))
+    dta_test = dta_test.assign(Parch4=(dta_test.loc[:, 'Parch'] == 4).astype(int))
     dta_test = dta_test.assign(Parch6=(dta_test.loc[:, 'Parch'] == 6).astype(int))
 
     dta_test = dta_test.assign(EmbarkedS=(dta_test.loc[:, 'Embarked'] == "S").astype(int))
