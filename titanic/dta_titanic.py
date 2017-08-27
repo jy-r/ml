@@ -31,6 +31,7 @@ def dtget():
     dta_train = dta[['bias','Pclass1','Pclass2','SexM','AgeN','SibSp','Parch1','Parch2','Parch3','Parch4','Parch5','Parch6','FareN','EmbarkedS','EmbarkedC']]
 
     test_df = pd.read_csv("titanic\\dta\\test.csv")
+    ids = test_df['PassengerId']
     dta_test = test_df[['Pclass','Sex','Age','SibSp','Parch','Fare','Embarked']]
     dta_test = dta_test.assign(Pclass1=(dta_test.loc[:, 'Pclass'] == 1).astype(int))
     dta_test = dta_test.assign(Pclass2=(dta_test.loc[:, 'Pclass'] == 2).astype(int))
@@ -55,4 +56,4 @@ def dtget():
     dta_test = dta_test.assign(bias = 1)
     dta_test = dta_test[['bias','Pclass1','Pclass2','SexM','AgeN','SibSp','Parch1','Parch2','Parch3','Parch4','Parch5','Parch6','FareN','EmbarkedS','EmbarkedC']]
     dta_test = dta_test.dropna()
-    return(dta_train, dta_test, dta)
+    return(dta_train, dta_test, dta, ids)
