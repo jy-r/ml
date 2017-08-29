@@ -79,38 +79,47 @@ for i in range(len(Y)):
     T[i, Y[i]] = 1
 
 
-costs = []
-D = X.shape[1]
-M = 7
-K = 2
-alpha = 10e-7
-W1 = np.random.randn(D, M)
-b1 = np.random.randn(M)
-W2 = np.random.randn(M, K)
-b2 = np.random.randn(K)
-
-for epoch in range(10000000):
-    output, hidden = forwardSig(X, W1, b1, W2, b2)
-    if epoch % 1000 == 0:
-        c = cost(T, output)
-        P = np.argmax(output, axis=1)
-        r = classificate_rate(predict(T), P)
-        f = classificate_rate(Y_test, np.argmax(forwardSig(X_test, W1, b1, W2, b2)[0], axis=1))
-        print("it:", epoch, "cost:", c, "c_train:", r, "c_test:", f)
-        costs.append(c)
-    output.shape
-    hidden.shape
-    X.shape
-    W2 += alpha * derivateW2(hidden, T, output)
-    b2 += alpha * derivateb2(T, output)
-    W1 += alpha * derivateW1(X, hidden, T, output, W2)
-    b1 += alpha * derivateb1(T, output, W2, hidden)
-
-plt.plot(costs)
-plt.show()
 
 
-dta_test = dta_test.as_matrix()
-Y_solution = np.argmax(forwardSig(dta_test, W1, b1, W2, b2)[0], axis=1)
-solution = pd.DataFrame({"PassengerId": ids, "Survived": Y_solution})
-solution.to_csv("titanic/solution.csv")
+Ms = np.arange(5, 35, 2)
+
+
+for j in Ms:
+    costs = []
+    D = X.shape[1]
+    M = 15
+    K = 2
+    reg = 0.01
+    alpha = 10e-7
+    W1 = np.random.randn(D, M)
+    b1 = np.random.randn(M)
+    W2 = np.random.randn(M, K)
+    b2 = np.random.randn(K)
+
+
+    for epoch in range(300000):
+        output, hidden = forwardSig(X, W1, b1, W2, b2)
+        if epoch % 1000 == 0:
+            c = cost(T, output)
+            P = np.argmax(output, axis=1)
+            r = classificate_rate(predict(T), P)
+            f = classificate_rate(Y_test, np.argmax(forwardSig(X_test, W1, b1, W2, b2)[0], axis=1))
+            # print("it:", epoch, "cost:", c, "c_train:", r, "c_test:", f)
+            costs.append(c)
+        output.shape
+        hidden.shape
+        X.shape
+        W2 += alpha * (derivateW2(hidden, T, output) + reg * W2)
+        b2 += alpha * (derivateb2(T, output) + reg * b2)
+        W1 += alpha * (derivateW1(X, hidden, T, output, W2) + reg * W1)
+        b1 += alpha * (derivateb1(T, output, W2, hidden) + reg * b1)
+
+    print("M:", j, "it:", epoch, "cost:", c, "c_train:", r, "c_test:", f)
+
+    # plt.plot(costs)
+    # plt.show()
+
+    dta_test2 = dta_test.as_matrix()
+    Y_solution = np.argmax(forwardSig(dta_test2, W1, b1, W2, b2)[0], axis=1)
+    solution = pd.DataFrame({"PassengerId": ids, "Survived": Y_solution})
+    solution.to_csv(("titanic/solution_{}.csv".format(j)))

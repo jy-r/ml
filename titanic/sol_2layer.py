@@ -22,12 +22,12 @@ X_test = dta_train_test.as_matrix()
 Y = Y_sample.as_matrix()
 Y_test = Y_test.as_matrix()
 
-
+np.seterr(divide='ignore', invalid='ignore', over='ignore')
 
 D = X.shape[1]
 M = 5
 K = 2
-alpha = 10e-9
+alpha = 10e-5
 
 W1 = np.random.randn(D, M)
 b1 = np.random.randn(M)
@@ -36,7 +36,15 @@ b2 = np.random.randn(M)
 W3 = np.random.randn(M, K)
 b3 = np.random.randn(K)
 
-reg = 0.01
+W1 = np.float64(W1)
+b1 = np.float64(b1)
+W2 = np.float64(W2)
+b2 = np.float64(b2)
+W3 = np.float64(W3)
+b3 = np.float64(b3)
+
+
+reg = 0.5
 
 T = np.zeros((len(Y), 2))
 for i in range(len(Y)):
@@ -44,11 +52,13 @@ for i in range(len(Y)):
 
 
 def sigmoid(x):
+    x[x<-700]=-700
     x = 1 / (1 + np.exp(-x))
     return(x)
 
 
 def softmax(x):
+    x -= np.max(x)
     x = np.exp(x) / np.exp(x).sum(axis=1, keepdims=True)
     return(x)
 
@@ -80,7 +90,7 @@ def classificate_rate(Y, P):
 costs = []
 
 
-for epoch in range(20000):
+for epoch in range(1000000):
     Y, Z1, Z2, Z3 = forward(X, W1, b1, W2, b2, W3, b3)
     if epoch % 1000 == 0:
         c = (T * np.log(Y)).sum()
@@ -105,6 +115,6 @@ plt.show()
 
 
 dta_test = dta_test.as_matrix()
-Y_solution = np.argmax(forward(dta_test, W1, b1, W2, b2)[0], axis=1)
+Y_solution = np.argmax(forward(dta_test, W1, b1, W2, b2, W3, b2)[0], axis=1)
 solution = pd.DataFrame({"PassengerId": ids, "Survived": Y_solution})
-solution.to_csv("titanic/solution2.csv")
+solution.to_csv("titanic/solution2layer.csv")
