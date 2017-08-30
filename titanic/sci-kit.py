@@ -42,7 +42,7 @@ for a in act:
         for k in Ks:
             l += 1
             hidden = np.concatenate((np.repeat(s,k),np.array([2])))
-            model = MLPClassifier(hidden_layer_sizes=hidden, activation=a, max_iter=10000)
+            model = MLPClassifier(hidden_layer_sizes=hidden, activation=a, max_iter=100000)
             model.fit(X,T)
             train_accuracy = model.score(X,T)
             test_accuracy = model.score(X_test, T_test)

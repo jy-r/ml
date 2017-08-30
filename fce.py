@@ -6,6 +6,10 @@ import matplotlib.pyplot as plt
 # plt.show()
 
 
+def relu(x):
+    return x * (x > 0)
+
+
 def sigmoid(x):
     x = 1 / (1 + np.exp(-x))
     return(x)
