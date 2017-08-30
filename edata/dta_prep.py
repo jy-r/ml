@@ -5,7 +5,7 @@ from fce import *
 
 
 def get_dta():
-    df = pd.read_csv('edta.csv')
+    df = pd.read_csv('edata/dta/edta.csv')
     dta = df.as_matrix()
     X = dta[:, :-1]
     Y = dta[:, -1]

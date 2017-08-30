@@ -1,7 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.utils import shuffle
-from dta_prep import get_dta
+from edata.dta_prep import get_dta
 
 
 def y2indicator(y, K):
