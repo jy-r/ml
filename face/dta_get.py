@@ -17,6 +17,7 @@ def dtaprep():
 def dtaget():
     dta3 = pd.read_csv('face/dta/face.csv')
     X = dta3.drop('emotion', axis=1)
-    X.shape
+    X = X / 255
     Y = dta3['emotion']
+
     return(X, Y)
