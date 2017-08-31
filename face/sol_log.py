@@ -20,12 +20,12 @@ T_test = T_test[:, 1]
 M = 100
 N, D = X.shape
 K = 7
-alpha = 5*10e-10
+alpha = 5*10e-7
 reg = 1
 
-W1 = np.random.randn(D, M)/ np.sqrt(D)
+W1 = np.random.randn(D, M)/np.sqrt(D)
 b1 = np.zeros(M)
-W2 = np.random.randn(M)/ np.sqrt(M)
+W2 = np.random.randn(M)/np.sqrt(M)
 b2 = 0
 
 
@@ -51,6 +51,6 @@ for i in range(1000):
 
     if i % 100 == 0:
         Y_cross, _ = forward(X_test, W1, b1, W2, b2)
-        test_accu = np.mean(T_test != Y_cross)
+        #test_accu = np.mean(T_test != np.round(Y_cross))
         cost = -(T*np.log(Y) + (1-T)*np.log(1-Y)).sum()
-        print("i:",i,"accu:",test_accu, "cost:", cost)
+        print("i:", i, "accu:", test_accu, "cost:", cost)
